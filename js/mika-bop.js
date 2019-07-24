@@ -99,7 +99,7 @@ var game = new Vue({
       setTimeout(this.idiotArrival, iRandomRange(500, 1000))
     },
     idiotArrival() {
-      if (this.state == 'game' && this.time > 1000) {
+      if (this.state == 'game' && this.timer > 1000) {
         var someIdiot = this.idiots[iRandomRange(0, this.idiots.length - 1)]
         someIdiot.up = true
         setTimeout(() => {
