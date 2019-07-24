@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-size: 1.5em;
+    }
+    [v-cloak] {
+      display: none;
+    }
+    #game {
+      max-width: 100vw;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    #timer {
+      color: white;
+      position: fixed;
+      top: 5%;
+      left: 5%;
+    }
+    .square {
+      position: relative;
+      padding-bottom: 100%;
+    }
+    .idiot-button {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: green;
+    }
+    .info-box {
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 90vw;
+      height: 90vh;
+      margin: 5vh 5vw;
+      padding: 2em;
+      background-color: #55aaff;
+      border-radius: 1rem;
+      border: 5px solid #0055ff;
+      text-align: center;
+    }
+  </style>
+  <title>Seraph Whack-a-Mole</title>
+</head>
+
+<body>
+  <div v-cloak id="game">
+    <div id="grid">
+      <div v-for="idiot of idiots" class="square">
+        <idiot-button
+          :idiot="idiot"
+          :up="idiot.up"
+          :key="idiot.id"
+          @hit="processHit">
+        </idiot-button>
+      </div>
+    </div>
+    <div v-show="mika.visible">
+      <img v-show="mika.up" src="">
+      <img v-show="mika.down" src="">
+    </div>
+    <div v-show="state=='intro'" class="info-box">
+      <p>No one seems to have common sense these days. Bop them when they show up with bad ideas.</p>
+      <button @click="startGame">START</button>
+    </div> 
+    <div v-show="state=='end'" class="info-box">
+      <h1>Score: {{ score }}</h1>
+      <p>You hit Ferid {{ ferid }} times!</p>
+      <p>You hit Guren {{ guren }} times!</p>
+      <p>You hit Yuu {{ yuu }} times!</p>
+      <button @click="startGame">REPLAY</button>
+    </div>
+    <h1 id="timer" v-show="state=='game'">{{ timeDisplay }}</h1>
+  </div>
+
+<script src="js/vue.js"></script>
+<script src="js/mika-bop.js"></script>
+
+</body>
+
+</html>
