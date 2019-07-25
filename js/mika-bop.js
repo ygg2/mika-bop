@@ -62,7 +62,7 @@ Vue.component('idiot-button', {
   computed: {
     idiotStyle() {
       return {
-        backgroundColor: this.up ? 'blue' : 'red'
+        backgroundColor: this.up ? 'blue' : 'transparent'
       }
     }
   }
