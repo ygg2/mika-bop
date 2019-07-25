@@ -55,6 +55,15 @@
       width: 100%;
       height: 100%;
     }
+    .mika {
+      pointer-events: none;
+      position: fixed;
+      width: 30vh;
+    }
+    .mika img {
+      max-width: 100%;
+      margin-top: -50%;
+    }
     .info-box {
       box-sizing: border-box;
       position: fixed;
@@ -104,20 +113,21 @@
           :idiot="idiot"
           :up="idiot.up"
           :key="idiot.id"
+          @hammer="hammerUp"
           @hit="processHit">
         </idiot-button>
       </div>
     </div>
-    <div :style="mika.css">
-      <img v-show="mika.up" src="">
-      <img v-show="mika.down" src="">
+    <div class="mika" :style="mika.css">
+      <img v-show="mika.up" src="img/mika_up.png">
+      <img v-show="!mika.up" src="img/mika_down.png">
     </div>
     <div v-show="state=='intro'" class="info-box">
       <p>No one seems to have common sense these days. Bop them as they show up with bad ideas.</p>
       <button @click="startGame">START</button>
     </div> 
     <div v-show="state=='end'" class="info-box">
-      <h1>Score: {{ score }}</h1>
+      <h1>Total: {{ score }}</h1>
       <p>You hit Ferid {{ ferid }} times!</p>
       <p>You hit Guren {{ guren }} times!</p>
       <p>You hit Yuu {{ yuu }} times!</p>

@@ -16,7 +16,7 @@ function iRandomRange(n1, n2) {
 
 function addIdiot(list, name, num) {
   for (var i = 0; i < num; i++) {
-    list.push({ name: name, earlyDown: false })
+    list.push({ name: name })
   }
 }
 
@@ -53,9 +53,13 @@ Vue.component('idiot-button', {
   `,
   methods: {
     hit() {
+      const top = this.$el.getBoundingClientRect().top
+      const left = this.$el.getBoundingClientRect().left
+      this.$emit('hammer', { top: top, left: left })
       if (this.up) {
         this.$emit('hit', this.idiot)
-        this.idiot.earlyDown = true
+        this.idiot.up = false
+        clearTimeout(this.idiot.timeout)
       }
     }
   },
@@ -82,7 +86,6 @@ var game = new Vue({
     mika: {
       up: true,
       css: {
-        position: 'fixed',
         top: '0',
         left: '0',
         display: 'none'
@@ -93,6 +96,7 @@ var game = new Vue({
   },
   methods: {
     startGame() {
+      this.mika.css.display = 'none'
       this.score = 0
       this.ferid = 0
       this.guren = 0
@@ -106,10 +110,8 @@ var game = new Vue({
       if (this.state == 'game' && this.timer > 20) {
         var someIdiot = this.idiots[iRandomRange(0, this.idiots.length - 1)]
         someIdiot.up = true
-        setTimeout(() => {
-          if (!someIdiot.earlyDown) {
-            someIdiot.up = false
-          }
+        someIdiot.timeout = setTimeout(() => {
+          someIdiot.up = false
         }, 1000)
         setTimeout(this.idiotArrival, iRandomRange(500, 1000))
       }
@@ -117,6 +119,9 @@ var game = new Vue({
     endGame() {
       this.state = 'end'
       this.timer = 0
+      for (let idiot of this.idiots) {
+        idiot.up = false
+      }
     },
     updateTimer() {
       if (this.timer == 0) {
@@ -126,10 +131,19 @@ var game = new Vue({
         this.timer--
       }
     },
+    hammerUp(hammer) {
+      this.mika.css.top = hammer.top + 'px'
+      this.mika.css.left = hammer.left + 'px'
+      this.mika.up = true
+      this.mika.css.display = 'block'
+      setTimeout(this.hammerDown, 150)
+    },
+    hammerDown() {
+      this.mika.up = false
+    },
     processHit(idiot) {
       this.score++
       this[idiot.name]++
-      idiot.up = false
     }
   },
   computed: {
