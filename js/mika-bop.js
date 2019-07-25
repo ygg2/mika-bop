@@ -62,7 +62,7 @@ Vue.component('idiot-button', {
   computed: {
     idiotStyle() {
       return {
-        backgroundColor: this.up ? 'blue' : 'green'
+        backgroundColor: this.up ? 'blue' : 'transparent'
       }
     }
   }
@@ -80,16 +80,20 @@ var game = new Vue({
     guren: 0,
     yuu: 0,
     mika: {
-      visible: true,
       up: true,
-      x: 0,
-      y: 0
+      css: {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        display: 'none'
+      }
     },
     idiots: generateIdiots(),
     timerInterval: null
   },
   methods: {
     startGame() {
+      this.score = 0
       this.ferid = 0
       this.guren = 0
       this.yuu = 0
@@ -99,7 +103,7 @@ var game = new Vue({
       setTimeout(this.idiotArrival, iRandomRange(500, 1000))
     },
     idiotArrival() {
-      if (this.state == 'game' && this.timer > 1000) {
+      if (this.state == 'game' && this.timer > 20) {
         var someIdiot = this.idiots[iRandomRange(0, this.idiots.length - 1)]
         someIdiot.up = true
         setTimeout(() => {
