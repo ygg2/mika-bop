@@ -54,15 +54,24 @@
       position: absolute;
       width: 100%;
       height: 100%;
+      overflow: hidden;
+      background-color: transparent;
+    }
+    .idiot-button img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      max-width: 100%;
     }
     .mika {
       pointer-events: none;
       position: fixed;
-      width: 30vh;
+      width: 27vh;
     }
     .mika img {
       max-width: 100%;
-      margin-top: -50%;
+      margin-top: -40%;
+      margin-left: 12%;
     }
     .info-box {
       box-sizing: border-box;
@@ -70,7 +79,6 @@
       top: 0;
       left: 0;
       width: 90vw;
-      height: 90vh;
       margin: 5vh 5vw;
       padding: 2em;
       background-color: #002200;
@@ -87,15 +95,84 @@
     .info-box button:hover {
       text-shadow: 0 0 20px #00ff00, 0 0 20px #00ff00;
     }
+    /*!
+    * Magic - https://www.minimamente.com
+    * Version - 1.4.1
+    * Licensed under the MIT license - https://opensource.org/licenses/MIT
+    * Copyright (c) 2019 Christian Pucci
+    * slightly modified to not go all the way down and up
+    */
+    .magictime {
+      -webkit-animation-duration: .5s;
+      animation-duration: .5s;
+    }
+
+    .slideDown {
+      -webkit-animation-name: slideDown;
+      animation-name: slideDown; }
+
+    @-webkit-keyframes slideDown {
+      0% {
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: translateY(0%);
+        transform: translateY(0%); }
+      100% {
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: translateY(80%);
+        transform: translateY(80%); } }
+
+    @keyframes slideDown {
+      0% {
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: translateY(0%);
+        transform: translateY(0%); }
+      100% {
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: translateY(80%);
+        transform: translateY(80%); } }
+
+    .slideDownReturn {
+      -webkit-animation-name: slideDownReturn;
+      animation-name: slideDownReturn; }
+
+    @-webkit-keyframes slideDownReturn {
+      0% {
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: translateY(80%);
+        transform: translateY(80%); }
+      100% {
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: translateY(0%);
+        transform: translateY(0%); } }
+
+    @keyframes slideDownReturn {
+      0% {
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: translateY(80%);
+        transform: translateY(80%); }
+      100% {
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: translateY(0%);
+        transform: translateY(0%); } }
     @media (max-aspect-ratio: 7/5) {
       #grid {
         width: 100vw;
+      }
+      .mika {
+        width: 30vw;
       }
     }
     @media (max-aspect-ratio: 5/7) {
       #grid {
         grid-template-columns: repeat(5, 1fr);
-        width: 100vw;
       }
       p, button, h1 {
         font-size: 5vw;
@@ -122,15 +199,15 @@
       <img v-show="mika.up" src="img/mika_up.png">
       <img v-show="!mika.up" src="img/mika_down.png">
     </div>
-    <div v-show="state=='intro'" class="info-box">
+    <div v-show="state=='intro'" class="info-box" :style="mobileHeight">
       <p>No one seems to have common sense these days. Bop them as they show up with bad ideas.</p>
       <button @click="startGame">START</button>
     </div> 
-    <div v-show="state=='end'" class="info-box">
+    <div v-show="state=='end'" class="info-box" :style="mobileHeight">
       <h1>Total: {{ score }}</h1>
-      <p>You hit Ferid {{ ferid }} times!</p>
-      <p>You hit Guren {{ guren }} times!</p>
-      <p>You hit Yuu {{ yuu }} times!</p>
+      <p>You hit Ferid {{ ferid }} {{ ferid==1?'time':'times' }}!</p>
+      <p>You hit Guren {{ guren }} {{ guren==1?'time':'times' }}!</p>
+      <p>You hit Yuu {{ yuu }} {{ yuu==1?'time':'times' }}!</p>
       <button @click="startGame">REPLAY</button>
     </div>
     <p id="timer" v-show="state=='game'">{{ timeDisplay }}</p>

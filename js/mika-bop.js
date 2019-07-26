@@ -47,10 +47,22 @@ Vue.component('idiot-button', {
     }
   },
   template: `
-  <button class="idiot-button" :style="idiotStyle" @click="hit">
-    <p>{{ idiot.name }}</p>
+  <button class="idiot-button" @click="hit">
+    <img src="img/hole_back.png">
+    <transition
+      enter-active-class="magictime slideDownReturn"
+      leave-active-class="magictime slideDown"
+    >
+      <img v-show="up" :src="imgSrc">
+    </transition>
+    <img src="img/hole_front.png">
   </button>
   `,
+  data() {
+    return {
+      imgSrc: 'img/' + this.idiot.name + '.png'
+    }
+  },
   methods: {
     hit() {
       const top = this.$el.getBoundingClientRect().top
@@ -60,13 +72,6 @@ Vue.component('idiot-button', {
         this.$emit('hit', this.idiot)
         this.idiot.up = false
         clearTimeout(this.idiot.timeout)
-      }
-    }
-  },
-  computed: {
-    idiotStyle() {
-      return {
-        backgroundColor: this.up ? 'blue' : 'transparent'
       }
     }
   }
@@ -85,6 +90,7 @@ var game = new Vue({
     yuu: 0,
     mika: {
       up: true,
+      timer: null,
       css: {
         top: '0',
         left: '0',
@@ -92,7 +98,8 @@ var game = new Vue({
       }
     },
     idiots: generateIdiots(),
-    timerInterval: null
+    timerInterval: null,
+    mobileHeight: { height: String(window.innerHeight * 0.9) + 'px' }
   },
   methods: {
     startGame() {
@@ -112,7 +119,7 @@ var game = new Vue({
         someIdiot.up = true
         someIdiot.timeout = setTimeout(() => {
           someIdiot.up = false
-        }, 1000)
+        }, 1300)
         setTimeout(this.idiotArrival, iRandomRange(500, 1000))
       }
     },
@@ -136,14 +143,22 @@ var game = new Vue({
       this.mika.css.left = hammer.left + 'px'
       this.mika.up = true
       this.mika.css.display = 'block'
-      setTimeout(this.hammerDown, 150)
+      clearTimeout(this.mika.timer)
+      setTimeout(this.hammerDown, 100)
     },
     hammerDown() {
       this.mika.up = false
+      this.mika.timer = setTimeout(this.hideMika, 300)
+    },
+    hideMika() {
+      this.mika.css.display = 'none'
     },
     processHit(idiot) {
       this.score++
       this[idiot.name]++
+    },
+    updateMobileHeight() {
+      this.mobileHeight = { height: String(window.innerHeight * 0.9) + 'px' }
     }
   },
   computed: {
@@ -151,5 +166,8 @@ var game = new Vue({
       var _string = String('000' + this.timer).slice(-3)
       return _string[0] + ':' + _string.slice(1)
     }
+  },
+  mounted() {
+    window.onresize = this.updateMobileHeight
   }
 })
