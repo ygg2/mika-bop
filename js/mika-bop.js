@@ -16,7 +16,7 @@ function iRandomRange(n1, n2) {
 
 function addIdiot(list, name, num) {
   for (var i = 0; i < num; i++) {
-    list.push({ name: name })
+    list.push({ name: name, points: 1 })
   }
 }
 
@@ -44,6 +44,10 @@ Vue.component('idiot-button', {
     up: {
       type: Boolean,
       default: false
+    },
+    mode: {
+      type: String,
+      default: 'normal'
     }
   },
   template: `
@@ -56,11 +60,23 @@ Vue.component('idiot-button', {
       <img v-show="up" :src="imgSrc">
     </transition>
     <img src="img/hole_front.png">
+    <div v-show="plusPoints" class="hit-text plus">
+      <transition enter-active-class="magictime slideDownReturn">
+        <p v-show="duringHit">+1</p>
+      </transition>
+    </div>
+    <div v-show="!plusPoints" class="hit-text minus">
+      <transition leave-active-class="magictime slideDown">
+        <p v-show="duringHit">-1</p>
+      </transition>
+    </div>
   </button>
   `,
   data() {
     return {
-      imgSrc: 'img/' + this.idiot.name + '.png'
+      imgSrc: 'img/' + this.idiot.name + '.png',
+      plusPoints: true,
+      duringHit: false
     }
   },
   methods: {
@@ -69,10 +85,19 @@ Vue.component('idiot-button', {
       const left = this.$el.getBoundingClientRect().left
       this.$emit('hammer', { top: top, left: left })
       if (this.up) {
+        if (this.mode == 'difficult' && this.idiot.name == 'yuu') {
+          this.idiot.points = -1
+          this.plusPoints = false
+        }
         this.$emit('hit', this.idiot)
+        this.duringHit = true
         this.idiot.up = false
         clearTimeout(this.idiot.timeout)
+        setTimeout(this.finishHit, 1000)
       }
+    },
+    finishHit() {
+      this.duringHit = false
     }
   }
 })
@@ -83,6 +108,7 @@ var game = new Vue({
   el: '#game',
   data: {
     state: 'intro', // states: intro, game, end
+    mode: 'normal',
     timer: 0,
     score: 0,
     ferid: 0,
@@ -154,11 +180,14 @@ var game = new Vue({
       this.mika.css.display = 'none'
     },
     processHit(idiot) {
-      this.score++
+      this.score += idiot.points
       this[idiot.name]++
     },
     updateMobileHeight() {
       this.mobileHeight = { height: String(window.innerHeight * 0.9) + 'px' }
+    },
+    toggleMode() {
+      this.mode = this.mode == 'normal' ? 'difficult' : 'normal';
     }
   },
   computed: {

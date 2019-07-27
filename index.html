@@ -95,6 +95,14 @@
     .info-box button:hover {
       text-shadow: 0 0 20px #00ff00, 0 0 20px #00ff00;
     }
+    .hit-text p {
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    .hit-text.minus p {
+      text-shadow: 0 0 1vh #ff0000;
+    }
     /*!
     * Magic - https://www.minimamente.com
     * Version - 1.4.1
@@ -103,8 +111,8 @@
     * slightly modified to not go all the way down and up
     */
     .magictime {
-      -webkit-animation-duration: .5s;
-      animation-duration: .5s;
+      -webkit-animation-duration: .4s;
+      animation-duration: .4s;
     }
 
     .slideDown {
@@ -187,6 +195,7 @@
     <div id="grid">
       <div v-for="idiot of idiots" class="square">
         <idiot-button
+          :mode="mode"
           :idiot="idiot"
           :up="idiot.up"
           :key="idiot.id"
@@ -199,21 +208,30 @@
       <img v-show="mika.up" src="img/mika_up.png">
       <img v-show="!mika.up" src="img/mika_down.png">
     </div>
-    <div v-show="state=='intro'" class="info-box" :style="mobileHeight">
-      <p>No one seems to have common sense these days. Bop them as they show up with bad ideas.</p>
-      <button @click="startGame">START</button>
+    <div v-show="state!='game'" class="info-box" :style="mobileHeight">
+      <div v-show="state=='intro'">
+        <p v-show="mode=='normal'">No one seems to have common sense these days. Bop them as they show up with bad ideas.</p>
+        <p v-show="mode=='difficult'">Smack Ferid and Guren whenever you see them, but take care not to hit Yuu.</p>
+        <button @click="startGame">START</button>
+        <button @click="toggleMode">
+          Switch to {{ mode=='normal'?'Difficult':'Normal' }} Mode
+        </button>
+      </div>
+      <div v-show="state=='end'">
+        <h1>Total: {{ score }}</h1>
+        <p>You hit Ferid {{ ferid }} {{ ferid==1?'time':'times' }}!</p>
+        <p>You hit Guren {{ guren }} {{ guren==1?'time':'times' }}!</p>
+        <p>You hit Yuu {{ yuu }} {{ yuu==1?'time':'times' }}!</p>
+        <button @click="startGame">REPLAY</button>
+        <button @click="toggleMode">
+          Switch to {{ mode=='normal'?'Difficult':'Normal' }} Mode
+        </button>
+      </div>
     </div> 
-    <div v-show="state=='end'" class="info-box" :style="mobileHeight">
-      <h1>Total: {{ score }}</h1>
-      <p>You hit Ferid {{ ferid }} {{ ferid==1?'time':'times' }}!</p>
-      <p>You hit Guren {{ guren }} {{ guren==1?'time':'times' }}!</p>
-      <p>You hit Yuu {{ yuu }} {{ yuu==1?'time':'times' }}!</p>
-      <button @click="startGame">REPLAY</button>
-    </div>
     <p id="timer" v-show="state=='game'">{{ timeDisplay }}</p>
   </div>
 
-  <script src="js/vue.js"></script>
+  <script src="js/vue.min.js"></script>
   <script src="js/mika-bop.js"></script>
 
 </body>
