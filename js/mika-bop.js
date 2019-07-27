@@ -88,6 +88,9 @@ Vue.component('idiot-button', {
         if (this.mode == 'difficult' && this.idiot.name == 'yuu') {
           this.idiot.points = -1
           this.plusPoints = false
+        } else {
+          this.idiot.points = 1
+          this.plusPoints = true
         }
         this.$emit('hit', this.idiot)
         this.duringHit = true
